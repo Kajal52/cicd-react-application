@@ -25,7 +25,6 @@ jobs:
 
       # 3️⃣ Build Docker image
       - name: Build Docker image
-        working-directory: cicd-react-application
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
         env:
@@ -35,7 +34,6 @@ jobs:
 
       # 4️⃣ Push Docker image
       - name: Push Docker image
-        working-directory: cicd-react-application
         run: |
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         env:
