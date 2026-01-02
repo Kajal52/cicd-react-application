@@ -3,15 +3,15 @@ name: Build and Push Docker Image to ECR
 on:
   push:
     branches:
-      - main       # Trigger on push to main branch
-  workflow_dispatch:  # Allows manual trigger
+      - main
+  workflow_dispatch:
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout the repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -25,6 +25,7 @@ jobs:
 
       # 3️⃣ Build Docker image
       - name: Build Docker image
+        working-directory: cicd-react-application
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
         env:
@@ -32,8 +33,9 @@ jobs:
           REPOSITORY: cicd-react-application
           IMAGE_TAG: latest
 
-      # 4️⃣ Push Docker image to ECR
+      # 4️⃣ Push Docker image
       - name: Push Docker image
+        working-directory: cicd-react-application
         run: |
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         env:
