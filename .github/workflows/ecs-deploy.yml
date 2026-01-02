@@ -3,19 +3,17 @@ name: Build and Push Docker Image to ECR
 on:
   push:
     branches:
-      - main       # Trigger on push to main branch
-  workflow_dispatch:  # Allows manual trigger
+      - main
+  workflow_dispatch:
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Login to AWS ECR (private)
       - name: Login to AWS ECR
         uses: aws-actions/amazon-ecr-login@v2
         env:
@@ -23,18 +21,18 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
-      # 3️⃣ Build Docker image
       - name: Build Docker image
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -f cicd-react-application/Dockerfile cicd-react-application
         env:
           REGISTRY: 048689618837.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           REPOSITORY: cicd-react-application
           IMAGE_TAG: latest
 
-      # 4️⃣ Push Docker image to ECR
       - name: Push Docker image
         run: |
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
         env:
-          REGISTRY: 048689618
+          REGISTRY: 048689618837.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          REPOSITORY: cicd-react-application
+          IMAGE_TAG: latest
